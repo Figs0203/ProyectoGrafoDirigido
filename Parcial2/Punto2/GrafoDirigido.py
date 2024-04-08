@@ -129,15 +129,61 @@ class GrafoDirigido:
                 personas = True
         return personas
 
+    """def a_guadalajara(self):
+        for arista in self.aristas:
+            if arista.nodo_inicio.nombre == "Toledo" and arista.nodo_destino.nombre == "Segovia":
+                arista.nodo_destino.tiene_bus = True
+                arista.nodo_inicio.tiene_bus = False
+                for i in self.aristas:
+                    if i.nodo_inicio.nombre == "Segovia" and i.nodo_destino.nombre == "Guadalajara":
+                        i.nodo_destino.tiene_bus = True
+                        i.nodo_inicio.tiene_bus = False
+                        return True
+
+            if arista.nodo_inicio.nombre != "Toledo" and arista.nodo_inicio.tiene_bus:
+                for j in self.aristas:
+                    if j.nodo_inicio.nombre == arista.nodo_inicio.nombre and j.nodo_destino.nombre == "Guadalajara":
+                        j.nodo_destino.tiene_bus = True
+                        j.nodo_inicio.tiene_bus = False
+                        if not self.revisar_personas():
+                            return False
+                        else:
+                            self.sortear_personas()
+                            return True"""
+
+    def a_guadalajara(self):
+        for arista in self.aristas:
+            if arista.nodo_inicio.nombre == "Toledo" and arista.nodo_destino.nombre == "Segovia":
+                arista.nodo_destino.tiene_bus = True
+                arista.nodo_inicio.tiene_bus = False
+                for i in self.aristas:
+                    if i.nodo_inicio.nombre == "Segovia" and i.nodo_destino.nombre == "Guadalajara":
+                        i.nodo_destino.tiene_bus = True
+                        i.nodo_inicio.tiene_bus = False
+                        return True
+
+        for arista in self.aristas:
+            if arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre == "Guadalajara":
+                for ari in self.aristas:
+                    if ari.nodo_inicio == arista.nodo_inicio:
+                        ari.nodo_destino.tiene_bus = False
+                for ari in self.aristas:
+                    if ari.nodo_destino == arista.nodo_destino:
+                        ari.nodo_destino.tiene_bus = True
+                return True
+
+        return False
+
+
     def recoger_pasajeros(self):
         a = True
         while a:
             b = True
             bus = self.agregar_bus()  # Se crea un nuevo objeto Bus en cada iteración del bucle
-            print(f"Enviando bus número {bus.buses_enviados}")
-            for a in self.aristas:
-                if a.nodo_inicio.nombre == "Madrid":
-                    a.nodo_inicio.tiene_bus = True
+            print(f"Enviando bus número {bus.buses_enviados}\n")
+            for k in self.aristas:
+                if k.nodo_inicio.nombre == "Madrid":
+                    k.nodo_inicio.tiene_bus = True
 
             while b:
                 aristas_disponibles = []
@@ -148,27 +194,25 @@ class GrafoDirigido:
                         if len(aristas_vacias) == 9:
                             a = False
 
-                    if arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre != "Guadalajara" and arista.personas > 0:
+                    if (arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre != "Guadalajara" and
+                            arista.personas > 0 or arista.nodo_destino.nombre == "Madrid" and arista.personas > 0):
                         aristas_disponibles.append(arista)
-                if len(aristas_disponibles) == 0:  # Se dirige a Guadalajara si el bus está lleno o si no hay personas en ninguna de las ciudades
-                    for arista in self.aristas:
-                        if arista.nodo_inicio.nombre == "Toledo" and arista.nodo_destino.nombre == "Segovia":
-                            arista.nodo_destino.tiene_bus = True
-                            arista.nodo_inicio.tiene_bus = False
-                            for i in self.aristas:
-                                if i.nodo_inicio.nombre == "Segovia" and i.nodo_destino.nombre == "Guadalajara":
-                                    i.nodo_destino.tiene_bus = True
-                                    i.nodo_inicio.tiene_bus = False
-                            break
-                    b = False
+                if len(aristas_disponibles) == 0:
+                    hola = self.a_guadalajara()
+                    if hola:
+                        b = False
+                    else:
+                        a = False
 
                 else:
                     arista_seleccionada = min(aristas_disponibles, key=lambda x: x.personas)
 
                 if bus.pasajeros + arista_seleccionada.personas == bus.maximo:
-                    arista_seleccionada.nodo_inicio.tiene_bus = False
                     parada = arista_seleccionada.personas
                     bus.pasajeros += parada
+                    for ari in self.aristas:
+                        if ari.nodo_inicio == arista_seleccionada.nodo_inicio:
+                            ari.nodo_destino.tiene_bus = False
                     for ari in self.aristas:
                         if ari.nodo_destino == arista_seleccionada.nodo_destino:
                             ari.nodo_destino.tiene_bus = True
@@ -178,21 +222,17 @@ class GrafoDirigido:
                         f"{parada} personas recogidas en {arista_seleccionada.nodo_destino.nombre}\n"
                         f"{bus.pasajeros} personas actualmente en el bus\n")
                     arista_seleccionada.personas = 0
-                    for arista in self.aristas:
-                        if arista.nodo_inicio.nombre != "Toledo" and arista.nodo_inicio.tiene_bus:
-                            for j in self.aristas:
-                                if j.nodo_inicio.nombre == arista.nodo_inicio.nombre and j.nodo_destino.nombre == "Guadalajara":
-                                    j.nodo_destino.tiene_bus = True
-                                    j.nodo_inicio.tiene_bus = False
-                                    if not self.revisar_personas():
-                                        break
-                                    else:
-                                        self.sortear_personas()
-                                        b = False
+                    hola = self.a_guadalajara()
+                    if hola:
+                        b = False
+                    else:
+                        a = False
 
                 if bus.pasajeros + arista_seleccionada.personas < bus.maximo:
-                    arista_seleccionada.nodo_inicio.tiene_bus = False
                     parada = arista_seleccionada.personas
+                    for ari in self.aristas:
+                        if ari.nodo_inicio == arista_seleccionada.nodo_inicio:
+                            ari.nodo_destino.tiene_bus = False
                     for ari in self.aristas:
                         if ari.nodo_destino == arista_seleccionada.nodo_destino:
                             ari.nodo_destino.tiene_bus = True
@@ -203,10 +243,12 @@ class GrafoDirigido:
                         f"{bus.pasajeros} personas actualmente en el bus\n")
 
                 else:
-                    arista_seleccionada.nodo_inicio.tiene_bus = False
                     exceso = bus.pasajeros + arista_seleccionada.personas - bus.maximo
                     parada = arista_seleccionada.personas - exceso
                     bus.pasajeros += parada
+                    for ari in self.aristas:
+                        if ari.nodo_inicio == arista_seleccionada.nodo_inicio:
+                            ari.nodo_destino.tiene_bus = False
                     for ari in self.aristas:
                         if ari.nodo_destino == arista_seleccionada.nodo_destino:
                             ari.nodo_destino.tiene_bus = True
@@ -215,16 +257,10 @@ class GrafoDirigido:
                     print(f"Se recogieron {parada} y se dejaron {exceso} personas en"
                           f" {arista_seleccionada.nodo_destino.nombre}\n")
 
-                    for arista in self.aristas:
-                        if arista.nodo_inicio.nombre != "Toledo" and arista.nodo_inicio.tiene_bus:
-                            for j in self.aristas:
-                                if j.nodo_inicio.nombre == arista.nodo_inicio.nombre and j.nodo_destino.nombre == "Guadalajara":
-                                    j.nodo_destino.tiene_bus = True
-                                    j.nodo_inicio.tiene_bus = False
-                                    if not self.revisar_personas():
-                                        a = False
-                                    else:
-                                        self.sortear_personas()
-                                        b = False
+                    hola = self.a_guadalajara()
+                    if hola:
+                        b = False
+                    else:
+                        a = False
 
         print("El sistema ha terminado exitosamente.")
