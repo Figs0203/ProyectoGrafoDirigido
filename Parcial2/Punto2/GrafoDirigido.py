@@ -131,26 +131,26 @@ class GrafoDirigido:
 
     def recoger_pasajeros(self):
         a = True
-        buses_enviados = 0  # Variable para rastrear el número de buses enviados
         while a:
             b = True
             bus = self.agregar_bus()  # Se crea un nuevo objeto Bus en cada iteración del bucle
-            buses_enviados += 1  # Se incrementa el contador de buses enviados
-            print(f"Enviando bus número {buses_enviados}")
+            print(f"Enviando bus número {bus.buses_enviados}")
+            for a in self.aristas:
+                if a.nodo_inicio.nombre == "Madrid":
+                    a.nodo_inicio.tiene_bus = True
 
             while b:
-                # Obtener todas las aristas que están disponibles para recoger pasajeros
                 aristas_disponibles = []
                 aristas_vacias = []
                 for arista in self.aristas:
                     if arista.personas == 0:
                         aristas_vacias.append(arista)
-                        if len(aristas_vacias) == 5:
+                        if len(aristas_vacias) == 9:
                             a = False
 
                     if arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre != "Guadalajara" and arista.personas > 0:
                         aristas_disponibles.append(arista)
-                if len(aristas_disponibles) == 0 or bus.pasajeros == 15:  # Se dirige a Guadalajara si el bus está lleno o si no hay personas en ninguna de las ciudades
+                if len(aristas_disponibles) == 0:  # Se dirige a Guadalajara si el bus está lleno o si no hay personas en ninguna de las ciudades
                     for arista in self.aristas:
                         if arista.nodo_inicio.nombre == "Toledo" and arista.nodo_destino.nombre == "Segovia":
                             arista.nodo_destino.tiene_bus = True
@@ -162,18 +162,20 @@ class GrafoDirigido:
                             break
                     b = False
 
-                elif len(aristas_disponibles) == 1:
-                    arista_seleccionada = aristas_disponibles[0]
-
                 else:
                     arista_seleccionada = min(aristas_disponibles, key=lambda x: x.personas)
 
                 if bus.pasajeros + arista_seleccionada.personas == bus.maximo:
-                    arista_seleccionada.nodo_destino.tiene_bus = True
                     arista_seleccionada.nodo_inicio.tiene_bus = False
-                    bus.pasajeros += arista_seleccionada.personas
+                    parada = arista_seleccionada.personas
+                    bus.pasajeros += parada
+                    for ari in self.aristas:
+                        if ari.nodo_destino == arista_seleccionada.nodo_destino:
+                            ari.nodo_destino.tiene_bus = True
+                            ari.personas = 0
+
                     print(
-                        f"{arista_seleccionada.personas} personas recogidas en {arista_seleccionada.nodo_destino.nombre}\n"
+                        f"{parada} personas recogidas en {arista_seleccionada.nodo_destino.nombre}\n"
                         f"{bus.pasajeros} personas actualmente en el bus\n")
                     arista_seleccionada.personas = 0
                     for arista in self.aristas:
@@ -189,20 +191,27 @@ class GrafoDirigido:
                                         b = False
 
                 if bus.pasajeros + arista_seleccionada.personas < bus.maximo:
-                    arista_seleccionada.nodo_destino.tiene_bus = True
                     arista_seleccionada.nodo_inicio.tiene_bus = False
-                    bus.pasajeros += arista_seleccionada.personas
+                    parada = arista_seleccionada.personas
+                    for ari in self.aristas:
+                        if ari.nodo_destino == arista_seleccionada.nodo_destino:
+                            ari.nodo_destino.tiene_bus = True
+                            ari.personas = 0
+                    bus.pasajeros += parada
                     print(
-                        f"{arista_seleccionada.personas} personas recogidas en {arista_seleccionada.nodo_destino.nombre}\n"
+                        f"{parada} personas recogidas en {arista_seleccionada.nodo_destino.nombre}\n"
                         f"{bus.pasajeros} personas actualmente en el bus\n")
-                    arista_seleccionada.personas = 0
+
                 else:
-                    arista_seleccionada.nodo_destino.tiene_bus = True
                     arista_seleccionada.nodo_inicio.tiene_bus = False
                     exceso = bus.pasajeros + arista_seleccionada.personas - bus.maximo
                     parada = arista_seleccionada.personas - exceso
                     bus.pasajeros += parada
-                    arista_seleccionada.personas = exceso
+                    for ari in self.aristas:
+                        if ari.nodo_destino == arista_seleccionada.nodo_destino:
+                            ari.nodo_destino.tiene_bus = True
+                            ari.personas = exceso
+
                     print(f"Se recogieron {parada} y se dejaron {exceso} personas en"
                           f" {arista_seleccionada.nodo_destino.nombre}\n")
 
