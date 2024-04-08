@@ -1,2 +1,2 @@
 # Parcial2_Estructuras
-Falta organizar Ávila y poner los aleatorios
+Ya está organizado, aunque se pueden pulir cosas, y falta el aleatorio
