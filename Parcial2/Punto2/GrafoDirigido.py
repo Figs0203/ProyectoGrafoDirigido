@@ -154,19 +154,28 @@ class GrafoDirigido:
     def a_guadalajara(self):
         for arista in self.aristas:
             if arista.nodo_inicio.nombre == "Toledo" and arista.nodo_destino.nombre == "Segovia":
-                arista.nodo_destino.tiene_bus = True
-                arista.nodo_inicio.tiene_bus = False
-                for i in self.aristas:
-                    if i.nodo_inicio.nombre == "Segovia" and i.nodo_destino.nombre == "Guadalajara":
-                        i.nodo_destino.tiene_bus = True
-                        i.nodo_inicio.tiene_bus = False
-                        return True
-
-        for arista in self.aristas:
-            if arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre == "Guadalajara":
                 for ari in self.aristas:
                     if ari.nodo_inicio == arista.nodo_inicio:
-                        ari.nodo_destino.tiene_bus = False
+                        ari.nodo_inicio.tiene_bus = False
+                for ari in self.aristas:
+                    if ari.nodo_destino == arista.nodo_destino:
+                        ari.nodo_destino.tiene_bus = True
+
+                for i in self.aristas:
+                    if i.nodo_inicio.nombre == "Segovia" and i.nodo_destino.nombre == "Guadalajara":
+                        for ari in self.aristas:
+                            if ari.nodo_inicio == i.nodo_inicio:
+                                ari.nodo_inicio.tiene_bus = False
+                        for ari in self.aristas:
+                            if ari.nodo_destino == i.nodo_destino:
+                                ari.nodo_destino.tiene_bus = True
+                        print("El bus ha llegado a Guadalajara")
+                        return True
+
+            elif arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre == "Guadalajara":
+                for ari in self.aristas:
+                    if ari.nodo_inicio == arista.nodo_inicio:
+                        ari.nodo_inicio.tiene_bus = False
                 for ari in self.aristas:
                     if ari.nodo_destino == arista.nodo_destino:
                         ari.nodo_destino.tiene_bus = True
@@ -212,7 +221,7 @@ class GrafoDirigido:
                     bus.pasajeros += parada
                     for ari in self.aristas:
                         if ari.nodo_inicio == arista_seleccionada.nodo_inicio:
-                            ari.nodo_destino.tiene_bus = False
+                            ari.nodo_inicio.tiene_bus = False
                     for ari in self.aristas:
                         if ari.nodo_destino == arista_seleccionada.nodo_destino:
                             ari.nodo_destino.tiene_bus = True
@@ -232,7 +241,7 @@ class GrafoDirigido:
                     parada = arista_seleccionada.personas
                     for ari in self.aristas:
                         if ari.nodo_inicio == arista_seleccionada.nodo_inicio:
-                            ari.nodo_destino.tiene_bus = False
+                            ari.nodo_inicio.tiene_bus = False
                     for ari in self.aristas:
                         if ari.nodo_destino == arista_seleccionada.nodo_destino:
                             ari.nodo_destino.tiene_bus = True
@@ -248,7 +257,7 @@ class GrafoDirigido:
                     bus.pasajeros += parada
                     for ari in self.aristas:
                         if ari.nodo_inicio == arista_seleccionada.nodo_inicio:
-                            ari.nodo_destino.tiene_bus = False
+                            ari.nodo_inicio.tiene_bus = False
                     for ari in self.aristas:
                         if ari.nodo_destino == arista_seleccionada.nodo_destino:
                             ari.nodo_destino.tiene_bus = True
