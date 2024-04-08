@@ -1,2 +1,2 @@
 # Parcial2_Estructuras
-Puta
+Puta (no está completo)
