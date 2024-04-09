@@ -31,7 +31,7 @@ grafo.agregar_arista(Segovia, Toledo, 159)
 grafo.asignar_personas()
 
 print(f"Personas en Madrid: {grafo.aristas[0].personas}\nPersonas en Segovia: {grafo.aristas[1].personas}\n"
-      f"Personas en Ávila: {grafo.aristas[2].personas}\nPersonas en Tole0do: {grafo.aristas[3].personas}\n")
+      f"Personas en Ávila: {grafo.aristas[2].personas}\nPersonas en Toledo: {grafo.aristas[3].personas}\n")
 
 
 aristas_ordenadas = sorted(grafo.aristas, key=lambda x: x.peso)

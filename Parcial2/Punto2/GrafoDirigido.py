@@ -206,6 +206,9 @@ class GrafoDirigido:
                                 f"{parada} personas recogidas en {i.nodo_destino.nombre}\n"
                                 f"{bus.pasajeros} personas actualmente en el bus\n")
                             self.a_guadalajara(bus)
+                            bus.buses_enviados += 1
+                            print("-" * 175)
+                            print(f"Enviando bus número {bus.buses_enviados}\n")
 
                         else:
                             exceso = bus.pasajeros + i.personas - bus.maximo
@@ -222,10 +225,14 @@ class GrafoDirigido:
                             print(f"Se recogieron {parada} y se dejaron {exceso} personas en"
                                   f" {i.nodo_destino.nombre}\n")
                             self.a_guadalajara(bus)
+                            bus.buses_enviados += 1
+                            print("-" * 175)
+                            print(f"Enviando bus número {bus.buses_enviados}\n")
 
     def recoger_pasajeros(self):
         a = True
         while a:
+            arista_seleccionada = 0
             b = True
             bus = self.agregar_bus()  # Se crea un nuevo objeto Bus en cada iteración del bucle
             print(f"Enviando bus número {bus.buses_enviados}\n")
@@ -254,6 +261,9 @@ class GrafoDirigido:
                 cont = 0
                 if len(aristas_disponibles) == 0 and mayor_abs.personas == 0:
                     self.a_guadalajara(bus)
+                    bus.buses_enviados += 1
+                    print("-"*175)
+                    print(f"Enviando bus número {bus.buses_enviados}\n")
 
                 else:
                     if len(aristas_disponibles) > 0:
@@ -261,14 +271,13 @@ class GrafoDirigido:
                     else:
                         if mayor_abs.personas == 0:
                             self.a_guadalajara(bus)
+                            bus.buses_enviados += 1
+                            print("-" * 175)
+                            print(f"Enviando bus número {bus.buses_enviados}\n")
                         else:
                             self.recoger_avila(bus)
 
-                if menor_abs.personas != 0 and menor_abs.personas < arista_seleccionada.personas and arista:
-                    a = self.recoger_avila(bus)
-                    bus.pasajeros = a
-
-                elif bus.pasajeros + arista_seleccionada.personas == bus.maximo:
+                if bus.pasajeros + arista_seleccionada.personas == bus.maximo:
                     parada = arista_seleccionada.personas
                     bus.pasajeros += parada
                     self.avanzar_bus(arista_seleccionada, True)
@@ -278,6 +287,9 @@ class GrafoDirigido:
                         f"{bus.pasajeros} personas actualmente en el bus\n")
                     arista_seleccionada.personas = 0
                     self.a_guadalajara(bus)
+                    bus.buses_enviados += 1
+                    print("-" * 175)
+                    print(f"Enviando bus número {bus.buses_enviados}\n")
 
                 elif bus.pasajeros + arista_seleccionada.personas < bus.maximo:
                     parada = arista_seleccionada.personas
@@ -303,5 +315,8 @@ class GrafoDirigido:
                           f" {arista_seleccionada.nodo_destino.nombre}\n")
                     bus.pasajeros = 0
                     self.a_guadalajara(bus)
+                    bus.buses_enviados += 1
+                    print("-" * 175)
+                    print(f"Enviando bus número {bus.buses_enviados}\n")
 
         print("El sistema ha terminado exitosamente.")
