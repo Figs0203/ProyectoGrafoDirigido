@@ -240,12 +240,18 @@ class GrafoDirigido:
                         aristas_sin_gua.append(i)
                 menor_abs = min(aristas_sin_gua, key=lambda x: x.personas)
                 mayor_abs = max(aristas_sin_gua, key=lambda x: x.personas)
+                cont = 0
                 for arista in self.aristas:
 
+                    if arista.nodo_destino.nombre == "Madrid" and arista.personas > 0:
+                        aristas_disponibles.append(arista)
+                    cont += 1
+
                     if (arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre != "Guadalajara" and
-                            arista.personas > 0 or arista.nodo_destino.nombre == "Madrid" and arista.personas > 0):
+                            arista.personas > 0):
                         aristas_disponibles.append(arista)
 
+                cont = 0
                 if len(aristas_disponibles) == 0 and mayor_abs.personas == 0:
                     self.a_guadalajara(bus)
 
@@ -258,7 +264,7 @@ class GrafoDirigido:
                         else:
                             self.recoger_avila(bus)
 
-                if menor_abs.personas != 0 and menor_abs.personas < arista_seleccionada.personas:
+                if menor_abs.personas != 0 and menor_abs.personas < arista_seleccionada.personas and arista:
                     a = self.recoger_avila(bus)
                     bus.pasajeros = a
 
