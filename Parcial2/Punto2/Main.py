@@ -39,4 +39,4 @@ aristas_ordenadas = sorted(grafo.aristas, key=lambda x: x.peso)
 #for arista in aristas_ordenadas:
     #print(arista)
 
-grafo.recoger_pasajeros()
+grafo.ejecutar()
