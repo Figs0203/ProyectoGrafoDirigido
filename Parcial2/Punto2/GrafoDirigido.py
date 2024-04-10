@@ -101,7 +101,7 @@ class GrafoDirigido:
                 usados.append(arista.nodo_destino.nombre)
                 probabilidad = random.random()  # Generar un número aleatorio para la probabilidad
                 if probabilidad > 0.5:  # Solo agregar pasajeros si la probabilidad es mayor al 30%
-                    nuevas = random.randint(0, 10)
+                    nuevas = random.randint(1, 10)
                     for ari in self.aristas:
                         if ari.nodo_destino.nombre == arista.nodo_destino.nombre:
                             ari.personas += nuevas
@@ -159,11 +159,13 @@ class GrafoDirigido:
     def ejecutar(self):
         ejecutando = True
         bus = self.agregar_bus()
+        print("-" * 175)
         print(f"Enviando bus número {bus.buses_enviados}\n")
         while ejecutando:
 
             aristas_ordenadas = sorted(filter(lambda x: x.personas != 0, self.aristas), key=lambda x: x.personas)
             arista_seleccionada = -1
+
             if len(aristas_ordenadas) == 0:
                 self.terminar()
 

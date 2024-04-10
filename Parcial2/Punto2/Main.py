@@ -36,7 +36,4 @@ print(f"Personas en Madrid: {grafo.aristas[0].personas}\nPersonas en Segovia: {g
 
 aristas_ordenadas = sorted(grafo.aristas, key=lambda x: x.peso)
 
-#for arista in aristas_ordenadas:
-    #print(arista)
-
 grafo.ejecutar()
