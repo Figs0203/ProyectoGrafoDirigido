@@ -99,9 +99,9 @@ class GrafoDirigido:
 
             else:
                 usados.append(arista.nodo_destino.nombre)
-                probabilidad = random.randint(0, 100)  # Generar un número aleatorio para la probabilidad
-                if probabilidad > 50:  # Solo agregar pasajeros si la probabilidad es mayor al 30%
-                    nuevas = random.randint(0, 15)
+                probabilidad = random.random()  # Generar un número aleatorio para la probabilidad
+                if probabilidad > 0.5:  # Solo agregar pasajeros si la probabilidad es mayor al 30%
+                    nuevas = random.randint(0, 10)
                     for ari in self.aristas:
                         if ari.nodo_destino.nombre == arista.nodo_destino.nombre:
                             ari.personas += nuevas
@@ -134,8 +134,6 @@ class GrafoDirigido:
         if len(aristas_con_personas) == 0:
             print("El sistema ha terminado exitosamente")
             quit()
-        else:
-            self.ejecutar()
 
     def a_guadalajara(self):
 
@@ -145,27 +143,35 @@ class GrafoDirigido:
                 for ari in self.aristas:
                     if ari.nodo_inicio.tiene_bus and ari.nodo_destino.nombre == "Guadalajara":
                         self.avanzar_bus(ari, False)
+                        print("El bus ha llegado a Guadalajara\n")
                         self.terminar()
+                        self.sortear_personas()
+                        self.ejecutar()
 
         for arista in self.aristas:
             if arista.nodo_inicio.tiene_bus and arista.nodo_destino.nombre == "Guadalajara":
                 self.avanzar_bus(arista, False)
+                print("El bus ha llegado a Guadalajara\n")
                 self.terminar()
+                self.sortear_personas()
+                self.ejecutar()
 
     def ejecutar(self):
         ejecutando = True
         bus = self.agregar_bus()
-        print(f"Enviando bus número {bus.buses_enviados}")
+        print(f"Enviando bus número {bus.buses_enviados}\n")
         while ejecutando:
 
             aristas_ordenadas = sorted(filter(lambda x: x.personas != 0, self.aristas), key=lambda x: x.personas)
             arista_seleccionada = -1
+            if len(aristas_ordenadas) == 0:
+                self.terminar()
 
             if aristas_ordenadas[0].nodo_destino.nombre == "Toledo":
                 for ari in self.aristas:
                     if ari.nodo_inicio.tiene_bus and ari.nodo_destino.nombre == "Toledo":
                         arista_seleccionada = ari
-                        self.recoger(arista_seleccionada)
+                        self.recoger(arista_seleccionada, bus)
 
             elif aristas_ordenadas[0].nodo_destino.nombre == "Segovia":
                 for ari in self.aristas:
@@ -174,7 +180,7 @@ class GrafoDirigido:
                             or ari.nodo_inicio.tiene_bus and ari.nodo_inicio.nombre == "Madrid"
                             and ari.nodo_destino.nombre == "Segovia"):
                         arista_seleccionada = ari
-                        self.recoger(arista_seleccionada)
+                        self.recoger(arista_seleccionada, bus)
 
                     if (ari.nodo_inicio.tiene_bus and ari.nodo_inicio.nombre == "Ávila"
                             and ari.nodo_destino.nombre == "Madrid"):
@@ -185,7 +191,7 @@ class GrafoDirigido:
                     if (ari.nodo_inicio.tiene_bus and ari.nodo_inicio.nombre == "Segovia"
                             and ari.nodo_destino.nombre == "Ávila"):
                         arista_seleccionada = ari
-                        self.recoger(arista_seleccionada)
+                        self.recoger(arista_seleccionada, bus)
 
                     if (ari.nodo_inicio.tiene_bus and ari.nodo_inicio.nombre == "Madrid"
                             and ari.nodo_destino.nombre == "Segovia"):
@@ -200,14 +206,14 @@ class GrafoDirigido:
                     for ari in self.aristas:
                         if ari.nodo_destino.nombre == "Madrid":
                             arista_seleccionada = ari
-                            self.recoger(arista_seleccionada)
+                            self.recoger(arista_seleccionada, bus)
 
                 else:
                     for ari in self.aristas:
                         if (ari.nodo_inicio.tiene_bus and ari.nodo_inicio.nombre == "Ávila"
                                 and ari.nodo_destino.nombre == "Madrid"):
                             arista_seleccionada = ari
-                            self.recoger(arista_seleccionada)
+                            self.recoger(arista_seleccionada, bus)
 
                         if (ari.nodo_inicio.tiene_bus and ari.nodo_inicio.nombre == "Segovia"
                                 and ari.nodo_destino.nombre == "Ávila"):
@@ -217,5 +223,28 @@ class GrafoDirigido:
                                 and ari.nodo_destino.nombre == "Segovia"):
                             self.avanzar_bus(ari, False)
 
-    def recoger(self, arista_seleccionada):
-        pass
+    def recoger(self, arista_seleccionada, bus):
+        parada = arista_seleccionada.personas
+
+        if (parada + bus.pasajeros) < 15:
+            self.avanzar_bus(arista_seleccionada, True)
+            bus.pasajeros += parada
+            print(f"Se recogieron {parada} pasajeros en {arista_seleccionada.nodo_destino.nombre}\n"
+                  f"{bus.pasajeros} pasajeros actualmente en el bus\n")
+
+        elif (parada + bus.pasajeros) == 15:
+            self.avanzar_bus(arista_seleccionada, True)
+            bus.pasajeros += parada
+            print(f"Se recogieron {parada} pasajeros en {arista_seleccionada.nodo_destino.nombre}\n"
+                  f"{bus.pasajeros} pasajeros actualmente en el bus\n")
+            self.a_guadalajara()
+
+        elif (parada + bus.pasajeros) > 15:
+            exceso = (parada + bus.pasajeros) - 15
+            total = parada - exceso
+            self.avanzar_bus(arista_seleccionada, False)
+            arista_seleccionada.personas = exceso
+            bus.pasajeros += total
+            print(f"Se recogieron {total} y se dejaron {exceso} pasajeros en {arista_seleccionada.nodo_destino.nombre}\n"
+                  f"{bus.pasajeros} pasajeros actualmente en el bus\n")
+            self.a_guadalajara()
