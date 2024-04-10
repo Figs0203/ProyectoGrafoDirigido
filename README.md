@@ -1,2 +1,2 @@
 # Parcial2_Estructuras
-Falta organizar
+Nueva versión, falta recoger()
