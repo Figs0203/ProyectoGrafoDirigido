@@ -9,4 +9,3 @@ class Bus:
 
     def __str__(self):
         return f"Bus número {Bus.buses_enviados}\n{self.pasajeros} a bordo"
-

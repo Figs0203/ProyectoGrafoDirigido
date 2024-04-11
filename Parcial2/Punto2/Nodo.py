@@ -6,6 +6,5 @@ class Nodo:
         self.altura = altura
         self.tiene_bus = tiene_bus
 
-
     def __str__(self):
         return f'Ciudad: {self.nombre}  (longitud:{self.longitud}, latitud:{self.latitud}, altura:{self.altura})'

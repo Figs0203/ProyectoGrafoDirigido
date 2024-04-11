@@ -7,4 +7,3 @@ class Arista:
 
     def __str__(self):
         return f'{self.nodo_inicio} --> {self.nodo_destino}\nEl trayecto tiene una distancia de: {self.peso} km\n'
-

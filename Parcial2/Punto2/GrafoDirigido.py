@@ -164,7 +164,6 @@ class GrafoDirigido:
         while ejecutando:
 
             aristas_ordenadas = sorted(filter(lambda x: x.personas != 0, self.aristas), key=lambda x: x.personas)
-            arista_seleccionada = -1
 
             if len(aristas_ordenadas) == 0:
                 self.terminar()
@@ -247,6 +246,7 @@ class GrafoDirigido:
             self.avanzar_bus(arista_seleccionada, False)
             arista_seleccionada.personas = exceso
             bus.pasajeros += total
-            print(f"Se recogieron {total} y se dejaron {exceso} pasajeros en {arista_seleccionada.nodo_destino.nombre}\n"
+            print(f"Se recogieron {total} y se dejaron {exceso} pasajeros en "
+                  f"{arista_seleccionada.nodo_destino.nombre}\n"
                   f"{bus.pasajeros} pasajeros actualmente en el bus\n")
             self.a_guadalajara()
