@@ -1,1 +1,1 @@
-# Parcial2_Estructuras
+# Proyecto Grafo Dirigido
